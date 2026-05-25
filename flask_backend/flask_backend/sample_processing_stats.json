@@ -1,0 +1,106 @@
+{
+  "job_id": "abc12345-6789-def0-1234-567890abcdef",
+  "mode": "both",
+  "processed_at": "2024-03-20T15:30:45.123456",
+  "total_images": 2,
+  "total_processing_time": 7.96,
+  "average_time_per_image": 3.98,
+  "images": [
+    {
+      "filename": "drawing1.png",
+      "input_size": [4096, 3072],
+      "processing_time": 3.84,
+      "success": true,
+      "timings": {
+        "filter_inference": 0.92,
+        "line_detection_inference": 2.45,
+        "postprocessing": 0.47
+      },
+      "outputs": {
+        "mask": "masks/drawing1_mask.png",
+        "overlay": "debug_overlays/drawing1_overlay.png",
+        "filtered": "filtered_images/drawing1_filtered.png",
+        "binary_masks": [
+          "binary_masks/drawing1_center_line.png",
+          "binary_masks/drawing1_dimension_line.png",
+          "binary_masks/drawing1_extension_line.png",
+          "binary_masks/drawing1_feature_visible.png",
+          "binary_masks/drawing1_hidden_line.png"
+        ],
+        "vectors": [
+          "vectors/drawing1_skeleton.png",
+          "vectors/drawing1_segments.json"
+        ]
+      },
+      "confidence": {
+        "overall": 0.912,
+        "center_line": 0.89,
+        "dimension_line": 0.92,
+        "extension_line": 0.87,
+        "feature_visible": 0.95,
+        "hidden_line": 0.76
+      },
+      "class_counts": {
+        "center_line": 12450,
+        "dimension_line": 8320,
+        "extension_line": 4510,
+        "feature_visible": 95230,
+        "hidden_line": 3280
+      },
+      "filter_stats": {
+        "removed_pixels": 145230,
+        "retained_pixels": 4854770,
+        "removal_percentage": 2.91
+      },
+      "warnings": []
+    },
+    {
+      "filename": "drawing2.png",
+      "input_size": [3840, 2160],
+      "processing_time": 4.12,
+      "success": true,
+      "timings": {
+        "filter_inference": 0.88,
+        "line_detection_inference": 2.78,
+        "postprocessing": 0.46
+      },
+      "outputs": {
+        "mask": "masks/drawing2_mask.png",
+        "overlay": "debug_overlays/drawing2_overlay.png",
+        "filtered": "filtered_images/drawing2_filtered.png",
+        "binary_masks": [
+          "binary_masks/drawing2_center_line.png",
+          "binary_masks/drawing2_dimension_line.png",
+          "binary_masks/drawing2_leader_line.png",
+          "binary_masks/drawing2_feature_visible.png",
+          "binary_masks/drawing2_cutting_plane.png"
+        ],
+        "vectors": [
+          "vectors/drawing2_skeleton.png",
+          "vectors/drawing2_segments.json"
+        ]
+      },
+      "confidence": {
+        "overall": 0.875,
+        "center_line": 0.85,
+        "dimension_line": 0.91,
+        "leader_line": 0.78,
+        "feature_visible": 0.93,
+        "cutting_plane": 0.82
+      },
+      "class_counts": {
+        "center_line": 8920,
+        "dimension_line": 12110,
+        "leader_line": 2340,
+        "feature_visible": 78450,
+        "cutting_plane": 5120
+      },
+      "filter_stats": {
+        "removed_pixels": 89430,
+        "retained_pixels": 3910570,
+        "removal_percentage": 2.24
+      },
+      "warnings": ["Low confidence for leader_line class"]
+    }
+  ]
+}

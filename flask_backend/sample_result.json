@@ -1,0 +1,76 @@
+{
+  "job_id": "abc12345-6789-def0-1234-567890abcdef",
+  "mode": "both",
+  "status": "completed",
+  "results": [
+    {
+      "filename": "drawing1.png",
+      "line_detection": {
+        "overlay_path": "/api/files/abc12345.../debug_overlays/drawing1_overlay.png",
+        "binary_mask_path": "/api/files/abc12345.../binary_masks/",
+        "mask_path": "/api/files/abc12345.../masks/drawing1_mask.png",
+        "vector_path": "/api/files/abc12345.../vectors/",
+        "confidence_score": 0.912,
+        "class_counts": {
+          "center_line": 12450,
+          "dimension_line": 8320,
+          "extension_line": 4510,
+          "feature_visible": 95230,
+          "hidden_line": 3280
+        },
+        "class_confidences": {
+          "center_line": 0.89,
+          "dimension_line": 0.92,
+          "extension_line": 0.87,
+          "feature_visible": 0.95,
+          "hidden_line": 0.76
+        }
+      },
+      "filter_out": {
+        "filtered_image_path": "/api/files/abc12345.../filtered_images/drawing1_filtered.png",
+        "filter_mask_path": "/api/files/abc12345.../filtered_images/drawing1_filter_mask.png",
+        "confidence_score": 0.94,
+        "removed_count": 145230,
+        "retained_count": 4854770
+      },
+      "processing_time": 3.84,
+      "warnings": []
+    },
+    {
+      "filename": "drawing2.png",
+      "line_detection": {
+        "overlay_path": "/api/files/abc12345.../debug_overlays/drawing2_overlay.png",
+        "binary_mask_path": "/api/files/abc12345.../binary_masks/",
+        "mask_path": "/api/files/abc12345.../masks/drawing2_mask.png",
+        "vector_path": "/api/files/abc12345.../vectors/",
+        "confidence_score": 0.875,
+        "class_counts": {
+          "center_line": 8920,
+          "dimension_line": 12110,
+          "leader_line": 2340,
+          "feature_visible": 78450,
+          "cutting_plane": 5120
+        },
+        "class_confidences": {
+          "center_line": 0.85,
+          "dimension_line": 0.91,
+          "leader_line": 0.78,
+          "feature_visible": 0.93,
+          "cutting_plane": 0.82
+        }
+      },
+      "filter_out": {
+        "filtered_image_path": "/api/files/abc12345.../filtered_images/drawing2_filtered.png",
+        "filter_mask_path": "/api/files/abc12345.../filtered_images/drawing2_filter_mask.png",
+        "confidence_score": 0.91,
+        "removed_count": 89430,
+        "retained_count": 3910570
+      },
+      "processing_time": 4.12,
+      "warnings": ["Low confidence for leader_line class"]
+    }
+  ],
+  "warnings": [],
+  "processing_time": 7.96,
+  "generated_at": "2024-03-20T15:30:45.123456"
+}

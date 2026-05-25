@@ -1,0 +1,21 @@
+venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+
+# Manual_Annotation Approach ignores
+Manual_Annotation Approach/Segmentation_Deeplab_models_checkpoints/
+Manual_Annotation Approach/annotation_patches/
+Manual_Annotation Approach/cad_annotations/
+Manual_Annotation Approach/dataset_patches/
+Manual_Annotation Approach/finetune_annotation_output/
+Manual_Annotation Approach/inference_output/
+Manual_Annotation Approach/pipeline_output/
+Manual_Annotation Approach/Annotation/
+
+# flask_backend ignores
+flask_backend/outputs/
+flask_backend/uploads/
+flask_backend/flask_backend/outputs/
+flask_backend/flask_backend/uploads/

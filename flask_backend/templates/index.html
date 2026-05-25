@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line Detection — Engineering Drawing Analyzer</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-drafting-compass"></i>
+                <h1>Line Detection</h1>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="showHistory()">
+                    <i class="fas fa-history"></i> History
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel: Upload & Controls -->
+            <aside class="control-panel">
+                <!-- Upload Section -->
+                <section class="panel-section">
+                    <h2><i class="fas fa-upload"></i> Upload Drawings</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <input type="file" id="fileInput" multiple accept=".png,.jpg,.jpeg,.tif,.tiff,.bmp,.zip" hidden>
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Drag & drop files here</p>
+                            <p class="upload-hint">or click to browse</p>
+                            <p class="upload-formats">PNG, JPG, TIFF, BMP or ZIP</p>
+                        </div>
+                    </div>
+                    <div class="file-list" id="fileList"></div>
+                </section>
+
+                <!-- Model Checkpoint -->
+                <section class="panel-section">
+                    <h2><i class="fas fa-cube"></i> Model Checkpoint</h2>
+                    <select class="select-input" id="checkpointSelect">
+                        <option value="">Loading…</option>
+                    </select>
+                </section>
+
+                <!-- Class Filter -->
+                <section class="panel-section">
+                    <h2><i class="fas fa-palette"></i> Line Classes</h2>
+                    <div class="class-filter-actions">
+                        <button class="btn btn-small" id="selectAllBtn" onclick="toggleAllClasses(true)">Select All</button>
+                        <button class="btn btn-small" id="deselectAllBtn" onclick="toggleAllClasses(false)">Deselect All</button>
+                    </div>
+                    <div class="class-filter-grid" id="classFilterGrid">
+                        <!-- populated by JS -->
+                    </div>
+                </section>
+
+                <!-- Inference Settings -->
+                <section class="panel-section">
+                    <h2><i class="fas fa-cogs"></i> Inference Settings</h2>
+
+                    <div class="setting-row">
+                        <label class="setting-label">
+                            <span>Test-Time Augmentation</span>
+                            <span class="setting-hint">Better accuracy, 3× slower</span>
+                        </label>
+                        <label class="toggle">
+                            <input type="checkbox" id="ttaToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <label class="setting-label">
+                            <span>Confidence Threshold</span>
+                            <span class="setting-hint" id="confValue">0.00</span>
+                        </label>
+                        <input type="range" class="range-input" id="confidenceSlider"
+                               min="0" max="1" step="0.05" value="0">
+                    </div>
+
+                    <div class="setting-row">
+                        <label class="setting-label">
+                            <span>Dilate Lines</span>
+                            <span class="setting-hint" id="dilateValue">0 px</span>
+                        </label>
+                        <input type="range" class="range-input" id="dilateSlider"
+                               min="0" max="5" step="1" value="0">
+                    </div>
+                </section>
+
+                <!-- Process Button -->
+                <button class="btn btn-primary btn-large" id="processBtn" disabled>
+                    <i class="fas fa-play"></i> Run Detection
+                </button>
+
+                <!-- Status Section -->
+                <section class="panel-section" id="statusSection" style="display: none;">
+                    <h2><i class="fas fa-tasks"></i> Status</h2>
+                    <div class="status-tracker">
+                        <div class="status-step" data-step="uploaded">
+                            <div class="status-icon"><i class="fas fa-check"></i></div>
+                            <span>Uploaded</span>
+                        </div>
+                        <div class="status-step" data-step="processing">
+                            <div class="status-icon"><i class="fas fa-spinner fa-spin"></i></div>
+                            <span>Processing</span>
+                        </div>
+                        <div class="status-step" data-step="done">
+                            <div class="status-icon"><i class="fas fa-check"></i></div>
+                            <span>Complete</span>
+                        </div>
+                    </div>
+                    <div class="progress-info" id="progressInfo"></div>
+                </section>
+            </aside>
+
+            <!-- Right Panel: Results -->
+            <section class="results-panel">
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-image"></i>
+                    <h3>No Results Yet</h3>
+                    <p>Upload engineering drawings and run detection to see results</p>
+                </div>
+
+                <!-- Results Container -->
+                <div class="results-container" id="resultsContainer" style="display: none;">
+                    <div class="results-grid" id="resultsGrid"></div>
+
+                    <!-- Detail View -->
+                    <div class="detail-view" id="detailView" style="display: none;">
+                        <div class="detail-header">
+                            <button class="btn btn-secondary" onclick="hideDetailView()">
+                                <i class="fas fa-arrow-left"></i> Back
+                            </button>
+                            <h3 id="detailFilename">filename.png</h3>
+                            <div class="quality-badge" id="qualityBadge">Good</div>
+                        </div>
+
+                        <!-- Image Viewer -->
+                        <div class="image-viewer">
+                            <div class="viewer-controls">
+                                <div class="view-tabs">
+                                    <button class="tab-btn active" data-view="overlay">Overlay</button>
+                                    <button class="tab-btn" data-view="original">Original</button>
+                                    <button class="tab-btn" data-view="per_class">Per Class</button>
+                                    <button class="tab-btn" data-view="comparison">Compare</button>
+                                </div>
+                                <div class="viewer-tools">
+                                    <button class="tool-btn" onclick="zoomIn()"><i class="fas fa-search-plus"></i></button>
+                                    <button class="tool-btn" onclick="zoomOut()"><i class="fas fa-search-minus"></i></button>
+                                    <button class="tool-btn" onclick="resetZoom()"><i class="fas fa-expand"></i></button>
+                                </div>
+                            </div>
+                            <div class="image-container" id="imageContainer">
+                                <img id="mainImage" src="" alt="Result">
+                                <img id="comparisonImage" src="" alt="Comparison" style="display: none;">
+                            </div>
+                            <!-- Per-class gallery -->
+                            <div class="per-class-gallery" id="perClassGallery" style="display: none;"></div>
+                            <div class="opacity-control" id="opacityControl" style="display: none;">
+                                <label>Opacity: <span id="opacityValue">50%</span></label>
+                                <input type="range" id="opacitySlider" min="0" max="100" value="50">
+                            </div>
+                        </div>
+
+                        <!-- Info Panels -->
+                        <div class="info-panels">
+                            <div class="info-card">
+                                <h4><i class="fas fa-palette"></i> Legend</h4>
+                                <div class="legend-content" id="legendContent"></div>
+                            </div>
+                            <div class="info-card">
+                                <h4><i class="fas fa-chart-bar"></i> Confidence Report</h4>
+                                <div class="confidence-content" id="confidenceContent"></div>
+                            </div>
+                            <div class="info-card">
+                                <h4><i class="fas fa-info-circle"></i> Summary</h4>
+                                <div class="summary-content" id="summaryContent"></div>
+                            </div>
+                            <div class="info-card">
+                                <h4><i class="fas fa-download"></i> Downloads</h4>
+                                <div class="download-content" id="downloadContent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Processing History</h3>
+                <button class="close-btn" onclick="hideHistory()">&times;</button>
+            </div>
+            <div class="modal-body" id="historyContent"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
